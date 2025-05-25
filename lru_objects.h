@@ -12,12 +12,14 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
-typedef struct {
+typedef struct LRUCacheChain {
     int capacity;
     int size;
     Node* head;
     Node* tail;
-    Node** hashmap;
-} LRUCashe;
+} LRUCacheChain;
+
+
+LRUCacheChain* createCacheChain();
 
 #endif //LRU_LRU_OBJECTS_H

@@ -3,3 +3,8 @@
 //
 
 #include "lru_objects.h"
+
+
+LRUCacheChain* createCacheChain(){
+    return 0;
+}

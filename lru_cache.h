@@ -7,7 +7,7 @@
 
 #include "lru_objects.h"
 
-LRUCashe* createCache(int capacity);
+LRUCacheChain* createCacheChain(int capacity);
 
 
 #endif //LRU_LRU_CACHE_H
