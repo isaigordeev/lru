@@ -6,7 +6,7 @@
 
 #define HASH_SIZE 1000
 
-int hash(int key){
-    return key & HASH_SIZE;
+int hash(int key) {
+  return key & HASH_SIZE;
 }
 

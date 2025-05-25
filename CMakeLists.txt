@@ -4,4 +4,4 @@ project(lru C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(lru
-        main.c lru_objects.c lru_cache.c hash.c)
+        main.c objects.c cache.c hash.c chain.c chain.h)
