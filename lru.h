@@ -26,8 +26,8 @@ int lru_put(LRU *lru, int key, int value);
 
 // Get a value by key from the LRU cache
 // Returns 1 and sets *value if found, else returns 0
-int lru_get(LRU *lru);
-int lru_get_tail(LRU *lru);
+const int lru_get_head_value(const LRU *lru);
+const int lru_get_tail_value(const LRU *lru);
 
 // Check if a key exists in the LRU cache
 int lru_contains(LRU *lru, int key);
@@ -37,12 +37,12 @@ int lru_contains(LRU *lru, int key);
 int lru_remove(LRU *lru, int key);
 
 // Get current size of the cache
-int lru_size(const LRU *lru);
+const int lru_size(const LRU *lru);
 
 // Return pointer to the head (most recently used) node
-Node *lru_get_head(const LRU *lru);
+const Node *lru_get_head(const LRU *lru);
 
 // Return pointer to the tail (least recently used) node
-Node *lru_get_tail(const LRU *lru);
+const Node *lru_get_tail(const LRU *lru);
 
 #endif //LRU__LRU_H_

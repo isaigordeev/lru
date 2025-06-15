@@ -12,7 +12,7 @@ set(SOURCES
         hash.c
         chain.c
         node.c
-        lru.cpp lru.h)
+        lru.c lru.h)
 
 add_executable(lru
         ${SOURCES})

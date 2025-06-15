@@ -7,8 +7,8 @@
 
 #include "node.h"
 #define LRU_SUCCESS      0
-#define LRU_ERR_NULL     1
-#define LRU_ERR_NOMEM    2
+#define LRU_ERR_NULL     2
+#define LRU_ERR_ALLOC    3
 #define LRU_ERR_DUPLICATE 3
 
 #endif //LRU_HASH_C_ERRORS_H_
