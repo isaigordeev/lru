@@ -66,26 +66,31 @@ void freeLRUHashTable(LRUHashTable *hash_table) {
   free(hash_table);
 }
 
-int hash_table_put(LRUHashTable *hash_table, int value, Node *node) {
-  if (!hash_table || !hash_table->hashtable) {
+int hash_table_put(LRUHashTable *hash_table, int value, Node **wrapped_node) {
+  if (!hash_table || !hash_table->hashtable || !wrapped_node) {
     return LRU_ERR_NULL;
+  }
+
+  // If wrapped_node is already allocated, assume it is already inserted
+  if (*wrapped_node) {
+    // No action needed — node is already managed
+    return LRU_ERR_MEM_OWNERSHIP;
   }
 
   int hash_index = hash(value);
 
-  node = createNode(hash_index, value, NULL, NULL, NULL);
+  Node *node = createNode(hash_index, value, NULL, NULL, NULL);
+  if (!node) {
+    return LRU_ERR_ALLOC;
+  }
+
+  *wrapped_node = node;  /* memory delegation */
 
   Node *last_node = hash_table_get_last_bucket_node(hash_table, hash_index);
 
   if (!last_node) {
-    if (!node) {
-      return LRU_ERR_ALLOC;
-    }
     hash_table->hashtable[hash_index] = node;
   } else {
-    if (!node) {
-      return LRU_ERR_ALLOC;
-    }
     last_node->bucket_next = node;
   }
 
