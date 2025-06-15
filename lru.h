@@ -9,13 +9,15 @@
 #include "chain.h"
 
 typedef struct LRU {
+  int queue_capacity;
+  int hash_size;
   LRUCacheChain *chain;
   LRUHashTable *hash_table;
-  int capacity;
 } LRU;
 
 // Initialize LRU cache with given capacity
-LRU *lru_init(int capacity);
+LRU *lru_init(int hash_size, int queue_capacity);
+LRU *lru_create();
 
 // Free the LRU cache and all associated resources
 void lru_free(LRU *lru);

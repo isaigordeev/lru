@@ -8,7 +8,6 @@
 #include "errors.h"
 #include <stdbool.h>
 #include "node.h"
-#include "chain.h"
 
 int hash(int key) {
   return key % HASH_SIZE;
@@ -115,13 +114,13 @@ int hash_table_contains(LRUHashTable *hash_table, int value, int *found) {
 
   while (current) {
     if (current->value == value) {
-      *found = 1;
+      *found = true;
       return LRU_SUCCESS;
     }
     current = current->bucket_next;
   }
 
-  *found = 0;
+  *found = false;
   return LRU_SUCCESS;
 }
 
@@ -133,12 +132,25 @@ int hash_table_remove(LRUHashTable *hash_table, int value) {
   int idx = hash(value);
   Node *current = hash_table->hashtable[idx];
 
+  if (!current) {
+    return LRU_SUCCESS;
+  }
+
+  Node *prev = NULL;
+
   while (current) {
-    if (current->bucket_next->value == value) {
-      current->bucket_next = current->bucket_next->bucket_next;
-      freeNode(current->bucket_next);
+    if (prev) {
+      if (current->value == value) {
+        prev->bucket_next = current->bucket_next;
+        freeNode(current);
+        return LRU_SUCCESS;
+      }
+    } else {
+      hash_table->hashtable[idx] = current->next;
+      freeNode(current);
       return LRU_SUCCESS;
     }
+    prev = current;
     current = current->bucket_next;
   }
 

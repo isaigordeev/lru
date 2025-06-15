@@ -5,6 +5,7 @@
 #ifndef LRU_HASH_H
 #define LRU_HASH_H
 #define HASH_SIZE 1000
+#define QUEUE_CAPACITY 1000
 
 #include "node.h"
 

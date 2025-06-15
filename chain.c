@@ -59,7 +59,6 @@ int addNodeToHead(LRUCacheChain *chain, Node *node) {
 void freeLRUCacheChain(struct LRUCacheChain *chain) {
   if (!chain) return;
 
-
   // Finally free the chain struct itself
   free(chain);
 }

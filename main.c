@@ -6,25 +6,15 @@
 #include <stdlib.h>
 #include "hash.h"
 #include "chain.h"
+#include "lru.h"
 
 int main() {
-  LRUHashTable *hash_table = initLRUHashTable(HASH_SIZE);
-  if (!hash_table) {
-    fprintf(stderr, "Failed to initialize LRUHashTable\n");
-    return EXIT_FAILURE;
-  }
 
-  LRUCacheChain *chain = initLRUCacheChain(HASH_SIZE, NULL, NULL);
-  if (!chain) {
-    fprintf(stderr, "Failed to initialize LRUCacheChain\n");
-    freeLRUHashTable(hash_table);
-    return EXIT_FAILURE;
-  }
-
+  LRU *lru = lru_init(HASH_SIZE, QUEUE_CAPACITY);
 
   // Cleanup
-  freeLRUCacheChain(chain);
-  freeLRUHashTable(hash_table);
+
+
 
   return EXIT_SUCCESS;
 }
