@@ -14,6 +14,7 @@ typedef struct LRUHashTable {
 int hash(int key);
 
 LRUHashTable *createLRUHashTable();
-LRUHashTable *initLRUHashTable();
+LRUHashTable *initLRUHashTable(int capacity);
+void freeLRUHashTable(LRUHashTable *hash_table);
 
 #endif //LRU_HASH_H
