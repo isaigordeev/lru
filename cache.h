@@ -5,7 +5,6 @@
 #ifndef LRU_CACHE_H
 #define LRU_CACHE_H
 
-#include "objects.h"
-
+#include "node.h"
 
 #endif //LRU_CACHE_H
