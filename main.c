@@ -6,4 +6,7 @@
 
 int main() {
 
+  LRUHashTable *hash_table = initLRUHashTable(HASH_SIZE);
+  LRUCacheChain
+
 }

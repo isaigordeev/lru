@@ -6,11 +6,15 @@
 #define LRU_NODE_H
 
 #include "chain.h"
+#include "stdlib.h"
+
 typedef struct Node {
   int key;
   int value;
   struct Node *prev;
   struct Node *next;
 } Node;
+
+Node *createNode(int key, int value, struct Node *prev, struct Node *next);
 
 #endif //LRU_NODE_H

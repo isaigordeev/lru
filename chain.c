@@ -5,31 +5,74 @@
 #include "chain.h"
 #include "stdlib.h"
 
-typedef struct LRUCacheChain {
-  int capacity;
-  int size;
-  struct Node *head;
-  struct Node *tail;
-} LRUCacheChain;
-
-struct LRUCacheChain *createCacheChain(int capacity, Node *head, Node *tail) {
-  struct LRUCacheChain *cache = malloc(sizeof(struct LRUCacheChain));
-
-  if (cache == NULL) {
+// Allocates memory for LRUCacheChain struct only (no initialization)
+struct LRUCacheChain *createLRUCacheChain() {
+  struct LRUCacheChain *cache = malloc(sizeof(*cache));
+  if (!cache) {
     return NULL;
   }
-
-  cache->capacity = capacity;
-  cache->head = head;
-  cache->tail = tail;
-  cache->size = 0;  // because empty
-
   return cache;
 }
 
-void freeLRUCacheChain(LRUCacheChain *chain) {
-  if (chain == NULL) {
-    return;
+// Initializes a newly created LRUCacheChain with given capacity, head, tail
+struct LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail) {
+  struct LRUCacheChain *chain = createLRUCacheChain();
+  if (!chain) {
+    return NULL;
   }
+
+  chain->capacity = capacity;
+  chain->head = head;
+  chain->tail = tail;
+  chain->size = 0;  // empty on init
+
+  return chain;
+}
+
+void freeLRUCacheChain(struct LRUCacheChain *chain) {
+  if (!chain) return;
+
+  // Free all nodes in the chain
+  Node *current = chain->head;
+  while (current) {
+    Node *next = current->next;
+    free(current);
+    current = next;
+  }
+
+  // Finally free the chain struct itself
   free(chain);
 }
+
+int getCapacity(const LRUCacheChain *chain) {
+  if (!chain) return -1;  // or some error value
+  return chain->capacity;
+}
+
+int getSize(const LRUCacheChain *chain) {
+  if (!chain) return -1;  // or some error value
+  return chain->size;
+}
+
+Node *getHead(const LRUCacheChain *chain) {
+  if (!chain) return NULL;
+  return chain->head;
+}
+
+Node *getTail(const LRUCacheChain *chain) {
+  if (!chain) return NULL;
+  return chain->tail;
+}
+
+// Get key and value from a node
+
+int getNodeKey(const Node *node) {
+  if (!node) return -1;  // or some sentinel/error value
+  return node->key;
+}
+
+int getNodeValue(const Node *node) {
+  if (!node) return -1;  // or some sentinel/error value
+  return node->value;
+}
+

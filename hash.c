@@ -5,8 +5,7 @@
 #include "hash.h"
 #include "stdlib.h"
 #include "stdio.h"
-
-#define HASH_SIZE 1000
+#include "errors.h"
 
 int hash(int key) {
   return key % HASH_SIZE;
@@ -56,3 +55,25 @@ void freeLRUHashTable(LRUHashTable *hash_table) {
 
   free(hash_table);
 }
+
+int put(LRUHashTable *hash_table, int value) {
+  if (!hash_table) {
+    return LRU_ERR_NULL;
+  }
+
+  if (!hash_table->hashtable) {
+    return LRU_ERR_NULL;
+  }
+
+  int hash_index = hash(value);
+
+  Node *curr_node = createNode(hash_index, value, NULL, NULL);
+
+  hash_table->hashtable[hash_index] = curr_node;
+
+  return LRU_SUCCESS;
+}
+
+
+
+
