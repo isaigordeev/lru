@@ -3,5 +3,12 @@ project(lru C)
 
 set(CMAKE_C_STANDARD 11)
 
+set(SOURCES
+        main.c
+        hash.c
+        chain.c
+        node.c
+        )
+
 add_executable(lru
-        main.c node.c cache.c hash.c chain.c chain.h)
+        ${SOURCES})

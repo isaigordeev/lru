@@ -5,7 +5,6 @@
 #ifndef LRU_NODE_H
 #define LRU_NODE_H
 
-#include "chain.h"
 #include "stdlib.h"
 
 typedef struct Node {

@@ -21,6 +21,6 @@ void freeLRUHashTable(LRUHashTable *hash_table);
 
 int put(LRUHashTable *hash_table, int value);
 int contains(LRUHashTable *hash_table, int value);
-int remove(LRUHashTable *hash_table, int value);
+int remove_value(LRUHashTable *hash_table, int value);
 
 #endif //LRU_HASH_H
