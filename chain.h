@@ -20,11 +20,11 @@ LRUCacheChain *createLRUCacheChain(void);
 // Initialize an LRUCacheChain with capacity and optional head/tail nodes
 LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail);
 
-// Free the LRUCacheChain and all nodes it contains
+// Free the LRUCacheChain and all nodes it hash_table_contains
 void freeLRUCacheChain(LRUCacheChain *chain);
 
 // Add a new node with key,value at the front (head) of the chain
-int addNodeToHead(LRUCacheChain *chain, int key, int value);
+int addNodeToHead(LRUCacheChain *chain, Node *node);
 
 // Remove a node from anywhere in the chain
 void removeNode(LRUCacheChain *chain, Node *node);

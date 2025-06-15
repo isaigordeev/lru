@@ -12,8 +12,10 @@ typedef struct Node {
   int value;
   struct Node *prev;
   struct Node *next;
+  struct Node *bucket_next;
 } Node;
 
-Node *createNode(int key, int value, struct Node *prev, struct Node *next);
+Node *createNode(int key, int value, struct Node *bucket_node, struct Node *prev, struct Node *next);
+void freeNode(Node *node);
 
 #endif //LRU_NODE_H

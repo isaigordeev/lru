@@ -4,7 +4,7 @@
 
 #include "node.h"
 
-Node *createNode(int key, int value, struct Node *prev, struct Node *next) {
+Node *createNode(int key, int value, struct Node *bucket_next, struct Node *prev, struct Node *next) {
   Node *node = malloc(sizeof(*node));
   if (!node) {
     return NULL;
@@ -12,6 +12,7 @@ Node *createNode(int key, int value, struct Node *prev, struct Node *next) {
 
   node->key = key;
   node->value = value;
+  node->bucket_next = bucket_next;
   node->prev = prev;
   node->next = next;
 

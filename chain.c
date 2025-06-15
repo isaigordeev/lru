@@ -5,6 +5,7 @@
 #include "chain.h"
 #include "stdlib.h"
 #include "errors.h"
+#include <stdbool.h>
 
 // Allocates memory for LRUCacheChain struct only (no initialization)
 struct LRUCacheChain *createLRUCacheChain() {
@@ -37,11 +38,29 @@ struct LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail) {
   return chain;
 }
 
+int addNodeToHead(LRUCacheChain *chain, Node *node) {
+  if (!chain) {
+    return LRU_ERR_NULL;
+  }
+
+  Node *head = getHead(chain);
+
+  if (!head) {
+    chain->head = node;
+  } else {
+    chain->tail = getTail(chain)->prev;
+    chain->head = node;
+    node->next = head;
+  }
+
+  return LRU_SUCCESS;
+}
+
 void freeLRUCacheChain(struct LRUCacheChain *chain) {
   if (!chain) return;
 
   // Free all nodes in the chain
-  Node *current = chain->head;
+  Node *current = getHead(chain);
   while (current) {
     Node *next = current->next;
     free(current);
