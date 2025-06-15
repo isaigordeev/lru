@@ -66,27 +66,27 @@ void freeLRUHashTable(LRUHashTable *hash_table) {
   free(hash_table);
 }
 
-int hash_table_put(LRUHashTable *hash_table, int value) {
+int hash_table_put(LRUHashTable *hash_table, int value, Node *node) {
   if (!hash_table || !hash_table->hashtable) {
     return LRU_ERR_NULL;
   }
 
   int hash_index = hash(value);
 
+  node = createNode(hash_index, value, NULL, NULL, NULL);
+
   Node *last_node = hash_table_get_last_bucket_node(hash_table, hash_index);
 
   if (!last_node) {
-    Node *new_node = createNode(hash_index, value, NULL, NULL, NULL);
-    if (!new_node) {
+    if (!node) {
       return LRU_ERR_ALLOC;
     }
-    hash_table->hashtable[hash_index] = new_node;
+    hash_table->hashtable[hash_index] = node;
   } else {
-    Node *new_node = createNode(hash_index, value, NULL, NULL, NULL);
-    if (!new_node) {
+    if (!node) {
       return LRU_ERR_ALLOC;
     }
-    last_node->bucket_next = new_node;
+    last_node->bucket_next = node;
   }
 
   return LRU_SUCCESS;

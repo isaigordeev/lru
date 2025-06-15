@@ -39,18 +39,21 @@ struct LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail) {
 }
 
 int addNodeToHead(LRUCacheChain *chain, Node *node) {
-  if (!chain) {
+  if (!chain || !node) {
     return LRU_ERR_NULL;
   }
 
   Node *head = getHead(chain);
+  
+  node->prev = NULL;
+  node->next = head;
 
   if (!head) {
     chain->head = node;
+    chain->tail = node;
   } else {
-    chain->tail = getTail(chain)->prev;
+    head->prev = node;
     chain->head = node;
-    node->next = head;
   }
 
   return LRU_SUCCESS;

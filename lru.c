@@ -43,6 +43,17 @@ LRU *lru_init(int hash_size, int queue_capacity) {
   return lru;
 }
 
+int lru_put(LRU *lru, int value) {
+  LRUHashTable *hash_table = lru->hash_table;
+  LRUCacheChain *chain = lru->chain;
+
+  Node *node = NULL;
+  int status = hash_table_put(hash_table, value, &node);
+  int another_status = addNodeToHead(chain, createNode(value, NULL, NULL, NULL));
+
+  return status;
+}
+
 void lru_free(LRU *lru) {
 
   if (!lru) {

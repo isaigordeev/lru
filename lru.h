@@ -24,7 +24,7 @@ void lru_free(LRU *lru);
 
 // Add a value to the LRU cache (or update if it exists)
 // Returns 1 if added or updated successfully, 0 on failure
-int lru_put(LRU *lru, int key, int value);
+int lru_put(LRU *lru, int value);
 
 // Get a value by key from the LRU cache
 // Returns 1 and sets *value if found, else returns 0
