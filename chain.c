@@ -4,6 +4,7 @@
 
 #include "chain.h"
 #include "stdlib.h"
+#include "errors.h"
 
 // Allocates memory for LRUCacheChain struct only (no initialization)
 struct LRUCacheChain *createLRUCacheChain() {
@@ -22,9 +23,16 @@ struct LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail) {
   }
 
   chain->capacity = capacity;
-  chain->head = head;
-  chain->tail = tail;
   chain->size = 0;  // empty on init
+
+  if (head == NULL && tail == NULL) {
+    chain->head = NULL;
+    chain->tail = NULL;
+  } else {
+    // Optional: if one is NULL but not the other, handle that case too
+    chain->head = head;
+    chain->tail = tail;
+  }
 
   return chain;
 }
@@ -45,12 +53,12 @@ void freeLRUCacheChain(struct LRUCacheChain *chain) {
 }
 
 int getCapacity(const LRUCacheChain *chain) {
-  if (!chain) return -1;  // or some error value
+  if (!chain) return LRU_ERR_NULL;  // or some error value
   return chain->capacity;
 }
 
 int getSize(const LRUCacheChain *chain) {
-  if (!chain) return -1;  // or some error value
+  if (!chain) return LRU_ERR_NULL;  // or some error value
   return chain->size;
 }
 
@@ -67,12 +75,12 @@ Node *getTail(const LRUCacheChain *chain) {
 // Get key and value from a node
 
 int getNodeKey(const Node *node) {
-  if (!node) return -1;  // or some sentinel/error value
+  if (!node) return LRU_ERR_NULL;  // or some sentinel/error value
   return node->key;
 }
 
 int getNodeValue(const Node *node) {
-  if (!node) return -1;  // or some sentinel/error value
+  if (!node) return LRU_ERR_NULL;  // or some sentinel/error value
   return node->value;
 }
 
