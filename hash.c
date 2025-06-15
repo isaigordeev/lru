@@ -68,30 +68,35 @@ void freeLRUHashTable(LRUHashTable *hash_table) {
 
 int hash_table_put(LRUHashTable *hash_table, int value, Node **wrapped_node) {
   if (!hash_table || !hash_table->hashtable || !wrapped_node) {
+    printf("[hash_table_put] Error: Null pointer input\n");
     return LRU_ERR_NULL;
   }
 
   // If wrapped_node is already allocated, assume it is already inserted
   if (*wrapped_node) {
-    // No action needed — node is already managed
+    printf("[hash_table_put] Node already allocated at %p, no insertion performed\n", (void *) (*wrapped_node));
     return LRU_ERR_MEM_OWNERSHIP;
   }
 
   int hash_index = hash(value);
+  printf("[hash_table_put] Calculated hash index: %d for value: %d\n", hash_index, value);
 
   Node *node = createNode(hash_index, value, NULL, NULL, NULL);
   if (!node) {
+    printf("[hash_table_put] Error: Failed to allocate node\n");
     return LRU_ERR_ALLOC;
   }
 
   *wrapped_node = node;  /* memory delegation */
+  printf("[hash_table_put] Created node at %p with value %d, delegating ownership\n", (void *) node, value);
 
   Node *last_node = hash_table_get_last_bucket_node(hash_table, hash_index);
-
   if (!last_node) {
     hash_table->hashtable[hash_index] = node;
+    printf("[hash_table_put] Inserted node as first in bucket %d\n", hash_index);
   } else {
     last_node->bucket_next = node;
+    printf("[hash_table_put] Appended node to end of bucket %d after node %p\n", hash_index, (void *) last_node);
   }
 
   return LRU_SUCCESS;

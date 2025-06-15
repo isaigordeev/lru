@@ -48,28 +48,34 @@ int lru_put(LRU *lru, int value) {
   LRUCacheChain *chain = lru->chain;
 
   Node *node = NULL;
-  int status = hash_table_put(hash_table, value, &node);
-  int another_status = addNodeToHead(chain, createNode(value, NULL, NULL, NULL));
+  int ht_status = hash_table_put(hash_table, value, &node);
+  int chain_status = add_node_to_head(chain, node);
 
-  return status;
+  return ht_status;
 }
 
 void lru_free(LRU *lru) {
-
   if (!lru) {
+    printf("[lru_free] Warning: NULL LRU pointer, nothing to free\n");
     return;
   }
 
-  if (!lru->chain) {
+  if (lru->chain) {
+    printf("[lru_free] Freeing LRUCacheChain at %p\n", (void *) lru->chain);
     freeLRUCacheChain(lru->chain);
     lru->chain = NULL;
+  } else {
+    printf("[lru_free] LRUCacheChain is already NULL\n");
   }
 
   if (lru->hash_table) {
+    printf("[lru_free] Freeing LRUHashTable at %p\n", (void *) lru->hash_table);
     freeLRUHashTable(lru->hash_table);
     lru->hash_table = NULL;
+  } else {
+    printf("[lru_free] LRUHashTable is already NULL\n");
   }
 
-  // Finally free the LRU itself
+  printf("[lru_free] Freeing LRU struct at %p\n", (void *) lru);
   free(lru);
 }

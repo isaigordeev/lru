@@ -24,7 +24,7 @@ LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail);
 void freeLRUCacheChain(LRUCacheChain *chain);
 
 // Add a new node with key,value at the front (head) of the chain
-int addNodeToHead(LRUCacheChain *chain, Node *node);
+int add_node_to_head(LRUCacheChain *chain, Node *node);
 
 // Remove a node from anywhere in the chain
 void removeNode(LRUCacheChain *chain, Node *node);

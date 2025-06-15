@@ -38,13 +38,13 @@ struct LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail) {
   return chain;
 }
 
-int addNodeToHead(LRUCacheChain *chain, Node *node) {
+int add_node_to_head(LRUCacheChain *chain, Node *node) {
   if (!chain || !node) {
     return LRU_ERR_NULL;
   }
 
   Node *head = getHead(chain);
-  
+
   node->prev = NULL;
   node->next = head;
 
