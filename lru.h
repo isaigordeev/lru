@@ -15,8 +15,8 @@ typedef struct LRU {
   LRUHashTable *hash_table;
 } LRU;
 
-// Initialize LRU cache with given capacity
-LRU *lru_init(int hash_size, int queue_capacity);
+// Initialize LRU cache with given hash_table_size
+LRU *lru_init(int hash_table_size, int queue_capacity);
 LRU *lru_create();
 
 // Free the LRU cache and all associated resources

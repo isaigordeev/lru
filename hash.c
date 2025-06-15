@@ -9,8 +9,12 @@
 #include <stdbool.h>
 #include "node.h"
 
-int hash(int key) {
-  return key % HASH_SIZE;
+int primitive_hash(const LRUHashTable *hashtable, int key, int *out_hash) {
+  if (!hashtable || hashtable->hash_table_size <= 0 || !out_hash) {
+    return LRU_ERR_NULL;
+  }
+  *out_hash = key % hashtable->hash_table_size;
+  return LRU_SUCCESS;
 }
 
 LRUHashTable *createLRUHashTable() {
@@ -24,17 +28,17 @@ LRUHashTable *createLRUHashTable() {
   return hash_table;
 }
 
-LRUHashTable *initLRUHashTable(int capacity) {
+LRUHashTable *initLRUHashTable(int hash_table_size) {
 
-  if (capacity <= 0) {
-    perror("Invalid capacity");
+  if (hash_table_size <= 0) {
+    perror("Invalid hash_table_size");
     return NULL;
   }
 
   LRUHashTable *hash_table = createLRUHashTable();
 
-  hash_table->capacity = capacity;
-  hash_table->hashtable = calloc(capacity, sizeof(Node *));
+  hash_table->hash_table_size = hash_table_size;
+  hash_table->hashtable = calloc(hash_table_size, sizeof(Node *));
 
   if (!hash_table->hashtable) {
     perror("Failed to allocate memory for hash_table attribute ->hashtable");
@@ -53,7 +57,7 @@ void freeLRUHashTable(LRUHashTable *hash_table) {
 
   // Free all nodes in the chain
   int i = 0;
-  for (; i < hash_table->capacity; i = i + 1) {
+  for (; i < hash_table->hash_table_size; i = i + 1) {
     Node *current = hash_table->hashtable[i];
     while (current) {
       Node *next = current->bucket_next;
@@ -78,10 +82,15 @@ int hash_table_put(LRUHashTable *hash_table, int value, Node **wrapped_node) {
     return LRU_ERR_MEM_OWNERSHIP;
   }
 
-  int hash_index = hash(value);
-  printf("[hash_table_put] Calculated hash index: %d for value: %d\n", hash_index, value);
+  int out_hash;
+  int hashing_status = primitive_hash(hash_table, value, &out_hash);
 
-  Node *node = createNode(hash_index, value, NULL, NULL, NULL);
+  if (hashing_status != LRU_SUCCESS) {
+    return LRU_ERR_NULL;
+  }
+
+  printf("[hash_table_put] Calculated hash index: %d for value: %d\n", out_hash, value);
+  Node *node = createNode(out_hash, value, NULL, NULL, NULL);
   if (!node) {
     printf("[hash_table_put] Error: Failed to allocate node\n");
     return LRU_ERR_ALLOC;
@@ -90,28 +99,47 @@ int hash_table_put(LRUHashTable *hash_table, int value, Node **wrapped_node) {
   *wrapped_node = node;  /* memory delegation */
   printf("[hash_table_put] Created node at %p with value %d, delegating ownership\n", (void *) node, value);
 
-  Node *last_node = hash_table_get_last_bucket_node(hash_table, hash_index);
+  Node *last_node = hash_table_get_last_bucket_node(hash_table, out_hash);
   if (!last_node) {
-    hash_table->hashtable[hash_index] = node;
-    printf("[hash_table_put] Inserted node as first in bucket %d\n", hash_index);
+    hash_table->hashtable[out_hash] = node;
+    printf("[hash_table_put] Inserted node as first in bucket %d\n", out_hash);
   } else {
     last_node->bucket_next = node;
-    printf("[hash_table_put] Appended node to end of bucket %d after node %p\n", hash_index, (void *) last_node);
+    printf("[hash_table_put] Appended node to end of bucket %d after node %p\n", out_hash, (void *) last_node);
   }
 
   return LRU_SUCCESS;
 }
 
 Node *hash_table_get_last_bucket_node(const LRUHashTable *hash_table, const int idx) {
-  if (!hash_table->hashtable[idx]) {
+
+  if (!hash_table) {
+    printf("[hash_table_get_last_bucket_node] ERROR: hash_table is NULL\n");
     return NULL;
-  } else {
-    Node *curr = hash_table->hashtable[idx];
-    while (curr) {
-      curr = curr->bucket_next;
-    }
-    return curr;
   }
+
+  if (!hash_table->hashtable) {
+    printf("[hash_table_get_last_bucket_node] ERROR: hashtable is NULL\n");
+    return NULL;
+  }
+
+  if (idx < 0 || idx >= hash_table->hash_table_size) {
+    printf("[hash_table_get_last_bucket_node] ERROR: idx %d out of bounds (size=%d)\n",
+           idx,
+           hash_table->hash_table_size);
+    return NULL;
+  }
+
+  if (!(hash_table->hashtable[idx])) {
+    printf("[hash_table_get_last_bucket_node] Bucket %d is empty\n", idx);
+    return NULL;
+  }
+
+  Node *curr = hash_table->hashtable[idx];
+  while (curr->bucket_next) {
+    curr = curr->bucket_next;
+  }
+  return curr;
 }
 
 int hash_table_contains(LRUHashTable *hash_table, int value, int *found) {
@@ -119,8 +147,14 @@ int hash_table_contains(LRUHashTable *hash_table, int value, int *found) {
     return LRU_ERR_NULL;
   }
 
-  int idx = hash(value);
-  Node *current = hash_table->hashtable[idx];
+  int *out_hash;
+  int hashing_status = primitive_hash(NULL, value, out_hash);
+
+  if (!hashing_status) {
+    return LRU_ERR_NULL;
+  }
+
+  Node *current = hash_table->hashtable[*out_hash];
 
   while (current) {
     if (current->value == value) {
@@ -139,8 +173,13 @@ int hash_table_remove(LRUHashTable *hash_table, int value) {
     return LRU_ERR_NULL;
   }
 
-  int idx = hash(value);
-  Node *current = hash_table->hashtable[idx];
+  int *out_hash;
+  int hashing_status = primitive_hash(NULL, value, out_hash);
+
+  if (!hashing_status) {
+    return LRU_ERR_NULL;
+  }
+  Node *current = hash_table->hashtable[*out_hash];
 
   if (!current) {
     return LRU_SUCCESS;
@@ -156,7 +195,7 @@ int hash_table_remove(LRUHashTable *hash_table, int value) {
         return LRU_SUCCESS;
       }
     } else {
-      hash_table->hashtable[idx] = current->next;
+      hash_table->hashtable[*out_hash] = current->next;
       freeNode(current);
       return LRU_SUCCESS;
     }

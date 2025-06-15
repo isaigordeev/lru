@@ -10,14 +10,14 @@
 #include "node.h"
 
 typedef struct LRUHashTable {
-  int capacity;
+  int hash_table_size;
   Node **hashtable;
 } LRUHashTable;
 
-int hash(int key);
+int primitive_hash(const LRUHashTable *hashtable, int key, int *out_hash);
 
 LRUHashTable *createLRUHashTable();
-LRUHashTable *initLRUHashTable(int capacity);
+LRUHashTable *initLRUHashTable(int hash_table_size);
 void freeLRUHashTable(LRUHashTable *hash_table);
 
 int hash_table_put(LRUHashTable *hash_table, int value, Node **node);

@@ -4,6 +4,7 @@
 
 #include "chain.h"
 #include "stdlib.h"
+#include "stdio.h"
 #include "errors.h"
 #include <stdbool.h>
 
@@ -16,7 +17,7 @@ struct LRUCacheChain *createLRUCacheChain() {
   return cache;
 }
 
-// Initializes a newly created LRUCacheChain with given capacity, head, tail
+// Initializes a newly created LRUCacheChain with given hash_table_size, head, tail
 struct LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail) {
   struct LRUCacheChain *chain = createLRUCacheChain();
   if (!chain) {
@@ -56,7 +57,26 @@ int add_node_to_head(LRUCacheChain *chain, Node *node) {
     chain->head = node;
   }
 
+  print_chain(chain);  // Print the full chain after insertion
+
   return LRU_SUCCESS;
+}
+
+void print_chain(LRUCacheChain *chain) {
+  if (!chain) {
+    printf("[print_chain] Chain is NULL\n");
+    return;
+  }
+  printf("[print_chain] Chain nodes (head -> tail): ");
+  Node *curr = chain->head;
+  while (curr) {
+    printf("%d", curr->value);
+    if (curr->next) {
+      printf(" -> ");
+    }
+    curr = curr->next;
+  }
+  printf("\n");
 }
 
 void freeLRUCacheChain(struct LRUCacheChain *chain) {

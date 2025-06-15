@@ -18,9 +18,9 @@ LRU *lru_create() {
   return lru;
 }
 
-LRU *lru_init(int hash_size, int queue_capacity) {
+LRU *lru_init(int hash_table_size, int queue_capacity) {
 
-  LRUHashTable *hash_table = initLRUHashTable(hash_size);
+  LRUHashTable *hash_table = initLRUHashTable(hash_table_size);
   if (!hash_table) {
     fprintf(stderr, "Failed to initialize LRUHashTable\n");
     return NULL;
@@ -35,7 +35,7 @@ LRU *lru_init(int hash_size, int queue_capacity) {
 
   LRU *lru = lru_create();
 
-  lru->hash_size = hash_size;
+  lru->hash_size = hash_table_size;
   lru->queue_capacity = queue_capacity;
   lru->chain = chain;
   lru->hash_table = hash_table;
@@ -49,6 +49,9 @@ int lru_put(LRU *lru, int value) {
 
   Node *node = NULL;
   int ht_status = hash_table_put(hash_table, value, &node);
+  if (ht_status == LRU_ERR_NULL) {
+    return ht_status;
+  }
   int chain_status = add_node_to_head(chain, node);
 
   return ht_status;

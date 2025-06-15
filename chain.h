@@ -17,7 +17,7 @@ typedef struct LRUCacheChain {
 // Create an empty LRUCacheChain (allocation only)
 LRUCacheChain *createLRUCacheChain(void);
 
-// Initialize an LRUCacheChain with capacity and optional head/tail nodes
+// Initialize an LRUCacheChain with hash_table_size and optional head/tail nodes
 LRUCacheChain *initLRUCacheChain(int capacity, Node *head, Node *tail);
 
 // Free the LRUCacheChain and all nodes it hash_table_contains
@@ -44,5 +44,7 @@ Node *getTail(const LRUCacheChain *chain);
 // Get key and value from a node
 int getNodeKey(const Node *node);
 int getNodeValue(const Node *node);
+
+void print_chain(LRUCacheChain *chain);
 
 #endif // LRU_CHAIN_H
